@@ -8,8 +8,10 @@ from django.contrib.auth.views import LoginView
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth import login
-from .models import Task
+from .models import Task, Student
 
+
+# login
 class CustomLoginVew(LoginView):
     template_name = 'base/login.html'
     fields = '__all__'
@@ -18,6 +20,8 @@ class CustomLoginVew(LoginView):
     def get_success_url(self):
         return reverse_lazy('tasks')
 
+
+# register
 class RegisterPage(FormView):
     template_name = 'base/register.html'
     form_class = UserCreationForm
@@ -36,7 +40,7 @@ class RegisterPage(FormView):
         return super(RegisterPage, self).get(*args, **kwargs)
 
 
-
+# section lists
 class TaskList(LoginRequiredMixin, ListView):
     model = Task
     context_object_name = 'tasks'
@@ -48,30 +52,41 @@ class TaskList(LoginRequiredMixin, ListView):
 
         search_input = self.request.GET.get('search-area') or ''
         if search_input:
-            context['tasks'] = context['tasks'].filter(title__icontains=search_input)
+            context['tasks'] = context['tasks'].filter(section_name__icontains=search_input)
 
         context['search_input'] = search_input
         return context
 
+# section views after clicking seclist
 class TaskDetail(LoginRequiredMixin, DetailView):
     model = Task
     context_object_name = 'task'
     template_name = 'base/task.html'
 
+
+# add section
 class TaskCreate(LoginRequiredMixin, CreateView):
     model = Task
-    fields = ['title', 'description', 'complete']
+    fields = ['section_name']
     success_url = reverse_lazy('tasks')
 
     def form_valid(self, form):
         form.instance.user = self.request.user
         return super(TaskCreate, self).form_valid(form)
 
+def call_response(request, pk):
+    obj = Student.objects.get(id = pk)
+    student = obj.user.all()
+    contexts = {'student': student}
+    return render(request, 'base/task_list.html', contexts)
+
+# update
 class TaskUpdate(LoginRequiredMixin, UpdateView):
     model = Task
-    fields = ['title', 'description', 'complete']
+    fields = ['section_name']
     success_url = reverse_lazy('tasks')
 
+# delete
 class DeleteView(LoginRequiredMixin, DeleteView):
     model = Task
     context_object_name = 'task'

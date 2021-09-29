@@ -25,7 +25,7 @@
 
 <hr>
 
-<h1>My list {{color}}</h1>
+<h1>Sections {{color}}</h1>
 <a class="add" href="{% url 'task-create' %}">Add Section</a>
 
 
@@ -48,7 +48,7 @@
   
     <tr>
         
-        <td>{{task.title}}</td>
+        <td>{{task.section_name}}</td>
        
         <td><a href="{% url 'task' task.id %}">View</a></td>
         <td><a href="{% url 'task-update' task.id %}">Edit</a></td>

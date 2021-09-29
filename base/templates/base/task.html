@@ -1,6 +1,14 @@
 {% extends 'base/main.html' %}
 {% block content %}
+<a href="{% url 'tasks' %}">Back</a>
+<h1>Section: {{task}}</h1>
 
-<h1>Task: {{task}}</h1>
+<table>
+    <td>{{student.Fullname}}</td>
+    <td><a href="">View</a></td>
+    <td><a href="">Edit</a></td>
+    <td><a href="">Delete</a></td>
+
+</table>
 
 {% endblock content %}
